@@ -128,9 +128,9 @@ class GameObject
         if(left < objLeft && right > objLeft && top < objTop && bottom > objTop)
             return 1;
         if(left < objRight && right > objRight && top < objTop && bottom > objTop)
-            return 2;
-        if(left < objLeft && right > objLeft && top < objBottom && bottom > objBottom)
             return 3;
+        if(left < objLeft && right > objLeft && top < objBottom && bottom > objBottom)
+            return 2;
         if(left < objRight && right > objRight && top < objBottom && bottom > objBottom)
             return 4;
         return 0;
