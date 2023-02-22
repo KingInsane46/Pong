@@ -9,12 +9,10 @@ public class Main {
         GameObject
                 leftBlock = new GameObject(WORLD_SCALE,WORLD_SCALE*5, Color.white, true),
                 rightBlock = new GameObject(WORLD_SCALE,WORLD_SCALE*5, Color.white, true),
-                centerBlockBottom = new GameObject(WORLD_SCALE/2,WORLD_SCALE*2, Color.white, true),
-                centerBlockTop = new GameObject(WORLD_SCALE/2,WORLD_SCALE*2, Color.white, true),
-                ball = new GameObject(WORLD_SCALE, WORLD_SCALE, Color.gray, false);
+                ball = new GameObject(WORLD_SCALE, WORLD_SCALE, Color.white, false);
 
         leftBlock.setPosition(leftBlock.width/2, WORLD_SCALE*SCREEN_SIZE_HEIGHT/2);
-        rightBlock.setPosition( WORLD_SCALE*SCREEN_SIZE_WIDTH, WORLD_SCALE*SCREEN_SIZE_HEIGHT/2);
+        rightBlock.setPosition( WORLD_SCALE*SCREEN_SIZE_WIDTH- rightBlock.width, WORLD_SCALE*SCREEN_SIZE_HEIGHT/2);
         ball.setPosition(WORLD_SCALE*SCREEN_SIZE_WIDTH/2, WORLD_SCALE*SCREEN_SIZE_HEIGHT/2);
         JPanel panel = new JPanel()
         {
@@ -25,8 +23,6 @@ public class Main {
 
                 leftBlock.draw(g);
                 rightBlock.draw(g);
-                centerBlockBottom.draw(g);
-                centerBlockTop.draw(g);
                 ball.draw(g);
             }
         };
@@ -62,11 +58,31 @@ class GameObject
         else
             g.fillOval(x-width/2, y-height/2, width, height);
         g.setColor(Color.red);
+        g.drawRect(x, y, width, height);
+        g.setColor(Color.blue);
         g.drawRect(x, y, 1, 1);
     }
     public void setPosition(int x, int y)
     {
         this.x = x;
         this.y = y;
+    }
+
+    public boolean checkCollision(GameObject obj)
+    {
+        int     left = x,
+                top = y,
+                right = x + width,
+                bottom = y + height,
+
+                objLeft = obj.x,
+                objTop = obj.y,
+                objRight = obj.x + obj.width,
+                objBottom = obj.y + obj.height;
+
+        if(left < objLeft && right > objLeft ||
+           left > objRight && right > objRight)
+            return true;
+        return false;
     }
 }
