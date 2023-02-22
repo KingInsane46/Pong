@@ -1,11 +1,11 @@
 import javax.swing.*;
 import java.awt.*;
+import java.util.concurrent.TimeUnit;
 
 public class Main {
-    public static void main(String[] args)
+    static final int WORLD_SCALE = 50, SCREEN_SIZE_WIDTH = 20, SCREEN_SIZE_HEIGHT = 10;
+    public static void main(String[] args) throws InterruptedException
     {
-        final int WORLD_SCALE = 50, SCREEN_SIZE_WIDTH = 20, SCREEN_SIZE_HEIGHT = 10;
-
         GameObject
                 leftBlock = new GameObject(WORLD_SCALE,WORLD_SCALE*5, Color.white, true),
                 rightBlock = new GameObject(WORLD_SCALE,WORLD_SCALE*5, Color.white, true),
@@ -34,6 +34,55 @@ public class Main {
         frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setVisible(true);
+
+        int moveRightSpeed = 1, moveDownSpeed = 1, collision;
+        while(true)
+        {
+            TimeUnit.MILLISECONDS.sleep(10);
+            frame.repaint();
+            ball.setPosition(ball.x + moveRightSpeed, ball.y + moveDownSpeed);
+
+            collision = objectTouchingScreen(ball);
+            if(collision == 1 || collision == 3)
+                moveRightSpeed *= -1;
+            if(collision == 2 || collision == 4)
+                moveDownSpeed *= -1;
+
+            collision = rightBlock.checkCollision(ball);
+            if(collision == 1 || collision == 3)
+                moveRightSpeed *= -1;
+            if(collision == 2 || collision == 4)
+                moveDownSpeed *= -1;
+
+            collision = leftBlock.checkCollision(ball);
+            if(collision == 1 || collision == 3)
+                moveRightSpeed *= -1;
+            if(collision == 2 || collision == 4)
+                moveDownSpeed *= -1;
+        }
+    }
+
+    static public int objectTouchingScreen(GameObject obj)
+    {
+        int     left = 0,
+                top = 0,
+                right = WORLD_SCALE*SCREEN_SIZE_WIDTH,
+                bottom = WORLD_SCALE*SCREEN_SIZE_HEIGHT,
+
+                objLeft = obj.x,
+                objTop = obj.y,
+                objRight = obj.x + obj.width,
+                objBottom = obj.y + obj.height;
+
+        if(left > objLeft)
+            return 1;
+        if(right < objRight)
+            return 3;
+        if(bottom < objBottom)
+            return 2;
+        if(top > objTop)
+            return 4;
+        return 0;
     }
 }
 
@@ -57,10 +106,6 @@ class GameObject
             g.fillRect(x-width/2, y-height/2, width, height);
         else
             g.fillOval(x-width/2, y-height/2, width, height);
-        g.setColor(Color.red);
-        g.drawRect(x, y, width, height);
-        g.setColor(Color.blue);
-        g.drawRect(x, y, 1, 1);
     }
     public void setPosition(int x, int y)
     {
@@ -68,7 +113,7 @@ class GameObject
         this.y = y;
     }
 
-    public boolean checkCollision(GameObject obj)
+    public int checkCollision(GameObject obj)
     {
         int     left = x,
                 top = y,
@@ -80,9 +125,14 @@ class GameObject
                 objRight = obj.x + obj.width,
                 objBottom = obj.y + obj.height;
 
-        if(left < objLeft && right > objLeft ||
-           left > objRight && right > objRight)
-            return true;
-        return false;
+        if(left < objLeft && right > objLeft && top < objTop && bottom > objTop)
+            return 1;
+        if(left < objRight && right > objRight && top < objTop && bottom > objTop)
+            return 2;
+        if(left < objLeft && right > objLeft && top < objBottom && bottom > objBottom)
+            return 3;
+        if(left < objRight && right > objRight && top < objBottom && bottom > objBottom)
+            return 4;
+        return 0;
     }
 }
