@@ -14,7 +14,7 @@ public class Main {
                 ball = new GameObject(WORLD_SCALE, WORLD_SCALE, Color.white, true);
 
         leftBlock.setPosition(leftBlock.width/2, WORLD_SCALE*SCREEN_SIZE_HEIGHT/2);
-        rightBlock.setPosition( WORLD_SCALE*SCREEN_SIZE_WIDTH- rightBlock.width, WORLD_SCALE*SCREEN_SIZE_HEIGHT/2);
+        rightBlock.setPosition( WORLD_SCALE*SCREEN_SIZE_WIDTH-rightBlock.width, WORLD_SCALE*SCREEN_SIZE_HEIGHT/2);
         ball.setPosition(WORLD_SCALE*SCREEN_SIZE_WIDTH/2, WORLD_SCALE*SCREEN_SIZE_HEIGHT/2);
 
         JPanel panel = new JPanel()
@@ -34,7 +34,7 @@ public class Main {
         JFrame frame = new JFrame("Pong");
         frame.add(panel);
         frame.addKeyListener(keyListener);
-        frame.setSize(WORLD_SCALE*SCREEN_SIZE_WIDTH-10, WORLD_SCALE*SCREEN_SIZE_HEIGHT+15);
+        frame.setSize(new Dimension(WORLD_SCALE*SCREEN_SIZE_WIDTH-8, WORLD_SCALE*SCREEN_SIZE_HEIGHT+40));
         frame.setResizable(false);
         frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -86,15 +86,15 @@ public class Main {
 
     static public int objectTouchingScreen(GameObject obj)
     {
-        int     left = 25,
-                top = 25,
+        int     left = 0,
+                top = 0,
                 right = WORLD_SCALE*SCREEN_SIZE_WIDTH,
                 bottom = WORLD_SCALE*SCREEN_SIZE_HEIGHT,
 
-                objLeft = obj.x,
-                objTop = obj.y,
-                objRight = obj.x + obj.width,
-                objBottom = obj.y + obj.height;
+                objLeft = obj.x - obj.width/2,
+                objTop = obj.y - obj.height/2,
+                objRight = obj.x + obj.width/2,
+                objBottom = obj.y + obj.height/2;
 
         if(left > objLeft)
             return 1;
@@ -128,6 +128,8 @@ class GameObject
             g.fillRect(x-width/2, y-height/2, width, height);
         else
             g.fillOval(x-width/2, y-height/2, width, height);
+        g.setColor(Color.red);
+        g.drawRect(x, y, width, height);
     }
     public void setPosition(int x, int y)
     {
@@ -137,15 +139,15 @@ class GameObject
 
     public int checkCollision(GameObject obj)
     {
-        int     left = x,
-                top = y,
-                right = x + width,
-                bottom = y + height,
+        int     left = x - width/2,
+                top = y - height/2,
+                right = x + width/2,
+                bottom = y + height/2,
 
-                objLeft = obj.x,
-                objTop = obj.y,
-                objRight = obj.x + obj.width,
-                objBottom = obj.y + obj.height;
+                objLeft = obj.x - obj.width/2,
+                objTop = obj.y - obj.height/2,
+                objRight = obj.x + obj.width/2,
+                objBottom = obj.y + obj.height/2;
 
         if(left < objLeft && right > objLeft && top < objTop && bottom > objTop)
             return 1;
