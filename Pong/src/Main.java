@@ -9,9 +9,9 @@ public class Main {
     public static void main(String[] args) throws InterruptedException
     {
         GameObject
-                leftBlock = new GameObject(WORLD_SCALE,WORLD_SCALE*5, Color.white, true),
-                rightBlock = new GameObject(WORLD_SCALE,WORLD_SCALE*5, Color.white, true),
-                ball = new GameObject(WORLD_SCALE, WORLD_SCALE, Color.white, true);
+                leftBlock = new GameObject(WORLD_SCALE,WORLD_SCALE*3, Color.white, true),
+                rightBlock = new GameObject(WORLD_SCALE,WORLD_SCALE*3, Color.white, true),
+                ball = new GameObject(WORLD_SCALE, WORLD_SCALE, Color.white, false);
 
         leftBlock.setPosition(leftBlock.width/2, WORLD_SCALE*SCREEN_SIZE_HEIGHT/2);
         rightBlock.setPosition( WORLD_SCALE*SCREEN_SIZE_WIDTH-rightBlock.width, WORLD_SCALE*SCREEN_SIZE_HEIGHT/2);
@@ -43,7 +43,7 @@ public class Main {
         int moveRightSpeed = 1, moveDownSpeed = 1, collision;
         while(true)
         {
-            TimeUnit.MILLISECONDS.sleep(10);
+            TimeUnit.MILLISECONDS.sleep(5);
             frame.repaint();
             ball.setPosition(ball.x + moveRightSpeed, ball.y + moveDownSpeed);
 
@@ -52,22 +52,31 @@ public class Main {
 
             //ball collision check
             collision = objectTouchingScreen(ball);
-            if(collision == 1 || collision == 3)
-                moveRightSpeed *= -1;
-            if(collision == 2 || collision == 4)
-                moveDownSpeed *= -1;
+            switch(collision)
+            {
+                case 1 -> ball.setPosition(WORLD_SCALE*SCREEN_SIZE_WIDTH/2, WORLD_SCALE*SCREEN_SIZE_HEIGHT/2);
+                case 2 -> moveDownSpeed = -1;
+                case 3 -> ball.setPosition(WORLD_SCALE*SCREEN_SIZE_WIDTH/2, WORLD_SCALE*SCREEN_SIZE_HEIGHT/2);
+                case 4 -> moveDownSpeed = 1;
+            }
 
             collision = rightBlock.checkCollision(ball);
-            if(collision == 1 || collision == 3)
-                moveRightSpeed *= -1;
-            if(collision == 2 || collision == 4)
-                moveDownSpeed *= -1;
+            switch(collision)
+            {
+                case 1 -> moveRightSpeed = 1;
+                case 2 -> moveDownSpeed = -1;
+                case 3 -> moveRightSpeed = -1;
+                case 4 -> moveDownSpeed = 1;
+            }
 
             collision = leftBlock.checkCollision(ball);
-            if(collision == 1 || collision == 3)
-                moveRightSpeed *= -1;
-            if(collision == 2 || collision == 4)
-                moveDownSpeed *= -1;
+            switch(collision)
+            {
+                case 1 -> moveRightSpeed = 1;
+                case 2 -> moveDownSpeed = -1;
+                case 3 -> moveRightSpeed = -1;
+                case 4 -> moveDownSpeed = 1;
+            }
 
             //block collision check with screen
             collision = objectTouchingScreen(leftBlock);
@@ -128,8 +137,6 @@ class GameObject
             g.fillRect(x-width/2, y-height/2, width, height);
         else
             g.fillOval(x-width/2, y-height/2, width, height);
-        g.setColor(Color.red);
-        g.drawRect(x, y, width, height);
     }
     public void setPosition(int x, int y)
     {
